@@ -15,6 +15,7 @@ import requests
 import json
 from baiduOCR import Get_baiduOCR_Response
 import math
+from reinforce_color import threshold
 
 class mential():
     def get_max_point(self, cnt):
@@ -205,11 +206,10 @@ def linecontours(cp_info, path):
     r_1, c_x, c_y = cp_info
     img = cv2.imread(path)
 
-    # cv2.circle(img, (c_x, c_y), 20, (23, 28, 28), -1)
-
     cv2.imshow('image_raw', img)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
+
 
     img = cv2.GaussianBlur(img, (3, 3), 0)
 
@@ -217,13 +217,21 @@ def linecontours(cp_info, path):
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
-    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)  # 转成灰度
+    # reinforce rgb 防止其他颜色指针无了 同时转换成
+    m1 = threshold(img[:, :, 0], 1)  # --- threshold on blue channel
+    m2 = threshold(img[:, :, 1], 2)  # --- threshold on green channel
+    m3 = threshold(img[:, :, 2], 3)  # --- threshold on red channel
+    # --- adding up all the results above ---
+    img = cv2.add(m1, cv2.add(m2, m3))
 
 
-    circle = np.zeros(gray.shape, dtype="uint8")
+    # gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)  # 转成灰度
+
+
+    circle = np.zeros(img.shape, dtype="uint8")
     cv2.circle(circle, (c_x, c_y), int(r_1 ), 255, -1)
-    gray = cv2.bitwise_and(gray, circle)
-    cv2.imshow('image_gray', gray)
+    gray = cv2.bitwise_and(img, circle)
+    cv2.imshow('image_reinforced', img)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
@@ -353,21 +361,27 @@ def needle(path, img, r, cx, cy, x0, y0):
     lines = cv2.HoughLinesP(img, 1, np.pi / 180, 100,
                             minLineLength=int(r / 2), maxLineGap=4)
 
-
-
     nmask = np.zeros(img.shape, np.uint8)
-    # add line to nmask
+
+    '''add line to nmask
+    record the longest line as pointer'''
+    px1, py1, px2, py2 = lines[0][0]
+    pointer_len = (py1-py2)**2 + (px1 - px2)**2
     for line in lines:
         x1, y1, x2, y2 = line[0]
+        len = (x1 - x2)**2 + (y1-y2)**2
+        if len > pointer_len:
+            pointer_len = len
+            px1, py1, px2, py2 = line[0]
         cv2.line(nmask, (x1, y1), (x2, y2), 100, 1, cv2.LINE_AA)
-    # 取第一条line 分辨出线的起点和终点
-    x1, y1, x2, y2 = lines[0][0]
-    d1 = (x1 - cx) ** 2 + (y1 - cy) ** 2
-    d2 = (x2 - cx) ** 2 + (y2 - cy) ** 2
+
+    # 取最长line 分辨出线的起点和终点
+    d1 = (px1 - cx) ** 2 + (py1 - cy) ** 2
+    d2 = (px2 - cx) ** 2 + (py2 - cy) ** 2
     if d1 > d2:
-         axit = [x1, y1]
+         axit = [px1, py1]
     else:
-        axit = [x2, y2]
+        axit = [px2, py2]
     # nmask = cv2.erode(nmask, kernel, iterations=2)
 
     cv2.imshow('houghlines', nmask)
@@ -467,4 +481,4 @@ def GetpointerResult(inputPath):
 
 
 if __name__ == "__main__":
-    GetpointerResult('images/1.jpg')
+    GetpointerResult('images/8.jpg')
