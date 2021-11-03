@@ -482,3 +482,4 @@ def GetpointerResult(inputPath):
 
 if __name__ == "__main__":
     GetpointerResult('images/8.jpg')
+    # test commit
