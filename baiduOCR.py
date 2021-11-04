@@ -1,7 +1,7 @@
 import requests
 import base64
 import json
-
+import re
 '''
 通用文字识别（高精度含位置版）
 '''
@@ -24,4 +24,5 @@ def Get_baiduOCR_Response(inputpath):
     if response:
         with open('ocrResult.json', 'w') as f:
             json.dump(response.json(), f, sort_keys=True, indent=4)
+        # print(response.json())
         return response
