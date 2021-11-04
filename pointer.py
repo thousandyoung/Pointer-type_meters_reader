@@ -16,6 +16,11 @@ import json
 from baiduOCR import Get_baiduOCR_Response
 import math
 from reinforce_color import threshold
+import argparse
+from re import T
+from sympy.logic.inference import PropKB
+import os
+import shutil
 
 class mential():
     def get_max_point(self, cnt):
@@ -217,28 +222,35 @@ def linecontours(cp_info, path):
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
-    # reinforce rgb 防止其他颜色指针无了 同时转换成
-    m1 = threshold(img[:, :, 0], 1)  # --- threshold on blue channel
-    m2 = threshold(img[:, :, 1], 2)  # --- threshold on green channel
-    m3 = threshold(img[:, :, 2], 3)  # --- threshold on red channel
-    # --- adding up all the results above ---
-    img = cv2.add(m1, cv2.add(m2, m3))
 
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)  # 转成灰度
 
-    # gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)  # 转成灰度
-
-
-    circle = np.zeros(img.shape, dtype="uint8")
+    circle = np.zeros(gray.shape, dtype="uint8")
     cv2.circle(circle, (c_x, c_y), int(r_1 ), 255, -1)
-    gray = cv2.bitwise_and(img, circle)
-    cv2.imshow('image_reinforced', img)
+    gray = cv2.bitwise_and(gray, circle)
+    cv2.imshow('image_gray', gray)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
-    # cv2.imshow('dds', img)
-    # cv2.waitKey(200)
-    # ret, binary = cv2.threshold(~gray, 0, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)
-    binary = cv2.adaptiveThreshold(~gray, 255,
+    # reinforce rgb 防止其他颜色指针无了
+    imgYUV = cv2.cvtColor(img, cv2.COLOR_BGR2YUV)
+    Y, U, V = cv2.split(imgYUV)
+    lower_red = np.array([20, 20, 20])
+    upper_red = np.array([200, 200, 200])
+    r = cv2.inRange(V, 170, 255)
+    # --- adding up all the results above ---
+    img = cv2.add(gray,r)
+    # img = gray
+    # img = cv2.add(m1, img)
+    # img = cv2.add(m2, img)
+    # circle = np.zeros(img.shape, dtype="uint8")
+    # cv2.circle(circle, (c_x, c_y), int(r_1*0.8), 255, -1)
+    # img = cv2.bitwise_and(img, circle)
+    cv2.imshow('image_reinforce', img)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+
+    binary = cv2.adaptiveThreshold(~img, 255,
                                    cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 15, -10)
 
     circle = np.zeros(binary.shape, dtype="uint8")
@@ -248,6 +260,7 @@ def linecontours(cp_info, path):
     cv2.imshow('image_binary', binary)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
+
 
     # # 开运算 让指针断开
     # kernel = np.ones((3, 3), np.uint8)
@@ -263,7 +276,7 @@ def linecontours(cp_info, path):
     kernel2 = np.ones((3, 3), np.uint8)
     erosion = cv2.erode(dilation, kernel2, iterations=2)
 
-    cv2.imshow('image_binary_after_close', binary)
+    cv2.imshow('image_binary_after_close',erosion)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
     # ************************
@@ -273,8 +286,8 @@ def linecontours(cp_info, path):
     contours, hier = cv2.findContours(
         erosion, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
 
-    cv2.drawContours(img, contours, -1, (0, 0, 255), 3)
-    cv2.imshow("contours", img)
+    cv2.drawContours(binary, contours, -1, (0, 0, 255), 3)
+    cv2.imshow("contours", binary)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
@@ -359,7 +372,7 @@ def needle(path, img, r, cx, cy, x0, y0):
     # cv2.destroyAllWindows()
 
     lines = cv2.HoughLinesP(img, 1, np.pi / 180, 100,
-                            minLineLength=int(r / 2), maxLineGap=4)
+                            minLineLength=int(r / 3), maxLineGap=4)
 
     nmask = np.zeros(img.shape, np.uint8)
 
@@ -481,4 +494,4 @@ def GetpointerResult(inputPath):
 
 
 if __name__ == "__main__":
-    GetpointerResult('images/8.jpg')
+    GetpointerResult('images/panel.jpg')
