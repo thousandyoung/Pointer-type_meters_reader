@@ -1,10 +1,10 @@
 可以识别指针式仪表读数，仅限于圆形仪表。
 使用百度ocr获取仪表数字。
 使用时调用pointer.py即可。
+![](images/ocr.png)![](images/pointer_rec.png)
 ![](images/3.jpg)
 ![](results/binary.png)
 ![](results/contours.png)
 ![](results/needle_mask.png)
 ![](results/draw_needle_on_img.png)
 ![](results/results.png)
-![](images/ocr.png)![](images/pointer_rec.png)
