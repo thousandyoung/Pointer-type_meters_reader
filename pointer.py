@@ -521,7 +521,7 @@ def get_results():
 
 def get_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--path', type=str, required=True,
+    parser.add_argument('--path', type=str, default='images/5.jpg',
                         help='path of the image')
     parser.add_argument('--detect_direction', type=bool,
                         default=True, help='detect direction or not')
