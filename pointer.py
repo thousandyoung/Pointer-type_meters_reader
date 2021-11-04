@@ -15,7 +15,6 @@ import requests
 import json
 from baiduOCR import Get_baiduOCR_Response
 import math
-from reinforce_color import threshold
 import argparse
 from re import T
 from sympy.logic.inference import PropKB
@@ -226,7 +225,7 @@ def linecontours(cp_info, path):
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)  # 转成灰度
 
     circle = np.zeros(gray.shape, dtype="uint8")
-    cv2.circle(circle, (c_x, c_y), int(r_1 ), 255, -1)
+    cv2.circle(circle, (c_x, c_y), int(r_1  ), 255, -1)
     gray = cv2.bitwise_and(gray, circle)
     cv2.imshow('image_gray', gray)
     cv2.waitKey(0)
@@ -235,8 +234,6 @@ def linecontours(cp_info, path):
     # reinforce rgb 防止其他颜色指针无了
     imgYUV = cv2.cvtColor(img, cv2.COLOR_BGR2YUV)
     Y, U, V = cv2.split(imgYUV)
-    lower_red = np.array([20, 20, 20])
-    upper_red = np.array([200, 200, 200])
     r = cv2.inRange(V, 170, 255)
     # --- adding up all the results above ---
     img = cv2.add(gray,r)
@@ -254,7 +251,7 @@ def linecontours(cp_info, path):
                                    cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 15, -10)
 
     circle = np.zeros(binary.shape, dtype="uint8")
-    cv2.circle(circle, (c_x, c_y), int(r_1*0.8), 255, -1)
+    cv2.circle(circle, (c_x, c_y), int(r_1*0.7), 255, -1)
     binary = cv2.bitwise_and(binary, circle)
 
     cv2.imshow('image_binary', binary)
@@ -494,4 +491,4 @@ def GetpointerResult(inputPath):
 
 
 if __name__ == "__main__":
-    GetpointerResult('images/panel.jpg')
+    GetpointerResult('images/1.jpg')

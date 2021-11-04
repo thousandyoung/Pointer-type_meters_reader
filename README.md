@@ -7,3 +7,4 @@
 ![](results/needle_mask.png)
 ![](results/draw_needle_on_img.png)
 ![](results/results.png)
+![](images/ocr.png)![](images/pointer_rec.png)
