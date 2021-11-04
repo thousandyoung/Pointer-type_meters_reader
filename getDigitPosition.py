@@ -1,4 +1,5 @@
 # coding: utf8
+from numpy.core.fromnumeric import mean
 import requests
 import json
 import cv2
@@ -16,8 +17,12 @@ def cv2_to_base64(image):
 # 返回((x0,y0), (x1,y1))
 # 1为0之后的第一个示数
 # r = requests.post(url=url, headers=headers, data=json.dumps(data))
+
+
 def get_p0_p1(r):
+
     r_list = getOcrResult(r)
+
     text_box_position_0 = r_list[0]['min_finegrained_vertexes_location']
     text_box_position_1 = r_list[1]['min_finegrained_vertexes_location']
     position_0 = get_text_box_position(text_box_position_0)
@@ -25,7 +30,10 @@ def get_p0_p1(r):
     text_0 = r_list[0]['words']
     text_1 = r_list[1]['words']
     # print(position_0, position_1)
-    return position_0, position_1, text_0, text_1
+
+    prob = np.mean([dict['probability']['average'] for dict in r_list])
+
+    return position_0, position_1, text_0, text_1, prob
 
 
 # 返回[x,y]
