@@ -21,6 +21,7 @@ from sympy.logic.inference import PropKB
 import os
 import shutil
 
+
 class mential():
     def get_max_point(self, cnt):
         lmost = tuple(cnt[cnt[:, :, 0].argmin()][0])
@@ -142,7 +143,7 @@ def markzero(path):
             cv2.circle(img, (x, y), 2, (0, 0, 255), thickness=-1)
             cv2.putText(img, '*0*', (x - 30, y), 1,
                         2.0, (0, 0, 0), thickness=2)
-            # cv2.imshow("image", img)
+            # # cv2.imshow("image", img)
 
         elif event == cv2.EVENT_LBUTTONUP:  # 鼠标左键fang
             cv2.destroyWindow("image")
@@ -151,12 +152,12 @@ def markzero(path):
     cv2.namedWindow("image")
     cv2.setMouseCallback("image", on_EVENT_LBUTTONDOWN)
 
-    cv2.imshow('image', img)
+    # cv2.imshow('image', img)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
     return p0
     # while (1):
-    #     cv2.imshow("image", img)
+    #     # cv2.imshow("image", img)
     #     if cv2.waitKey(0)&0xFF>0:
     #     # if cv2.waitKey(500)|0xFF>0:
     #         print(flag)
@@ -187,11 +188,11 @@ def cut_pic(path):
     # print(circle)
     cv2.circle(circle, (c_x, c_y), int(r_1), 0, -1)
     # cv2.circle(circle, (c_x, c_y), int(r_1*0.65), (255,255,255), -1)
-    # cv2.imshow("circle", circle)
+    # # cv2.imshow("circle", circle)
     bitwiseOr = cv2.bitwise_or(input, circle)
 
     cv2.circle(bitwiseOr, (c_x, c_y), 2, 0, -1)
-    # cv2.imshow(pname+'_resize'+ptype, bitwiseOr)
+    # # cv2.imshow(pname+'_resize'+ptype, bitwiseOr)
     # cv2.waitKey(0)
     # cv2.destroyAllWindows()
 
@@ -210,24 +211,22 @@ def linecontours(cp_info, path):
     r_1, c_x, c_y = cp_info
     img = cv2.imread(path)
 
-    cv2.imshow('image_raw', img)
+    # cv2.imshow('image_raw', img)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
-
 
     img = cv2.GaussianBlur(img, (3, 3), 0)
 
-    cv2.imshow('image_gaussblur', img)
+    # cv2.imshow('image_gaussblur', img)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
-
 
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)  # 转成灰度
 
     circle = np.zeros(gray.shape, dtype="uint8")
-    cv2.circle(circle, (c_x, c_y), int(r_1  ), 255, -1)
+    cv2.circle(circle, (c_x, c_y), int(r_1), 255, -1)
     gray = cv2.bitwise_and(gray, circle)
-    cv2.imshow('image_gray', gray)
+    # cv2.imshow('image_gray', gray)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
@@ -236,14 +235,14 @@ def linecontours(cp_info, path):
     Y, U, V = cv2.split(imgYUV)
     r = cv2.inRange(V, 170, 255)
     # --- adding up all the results above ---
-    img = cv2.add(gray,r)
+    img = cv2.add(gray, r)
     # img = gray
     # img = cv2.add(m1, img)
     # img = cv2.add(m2, img)
     # circle = np.zeros(img.shape, dtype="uint8")
     # cv2.circle(circle, (c_x, c_y), int(r_1*0.8), 255, -1)
     # img = cv2.bitwise_and(img, circle)
-    cv2.imshow('image_reinforce', img)
+    # cv2.imshow('image_reinforce', img)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
@@ -254,17 +253,16 @@ def linecontours(cp_info, path):
     cv2.circle(circle, (c_x, c_y), int(r_1*0.7), 255, -1)
     binary = cv2.bitwise_and(binary, circle)
 
-    cv2.imshow('image_binary', binary)
+    # cv2.imshow('image_binary', binary)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
-
 
     # # 开运算 让指针断开
     # kernel = np.ones((3, 3), np.uint8)
     # erosion = cv2.erode(binary, kernel, iterations=2)
     # dilation = cv2.dilate(erosion, kernel, iterations=2)
     #
-    # cv2.imshow('image_binary_after_open', binary)
+    # # cv2.imshow('image_binary_after_open', binary)
     # cv2.waitKey(0)
     # cv2.destroyAllWindows()
     # 闭运算 加强指针
@@ -273,18 +271,18 @@ def linecontours(cp_info, path):
     kernel2 = np.ones((3, 3), np.uint8)
     erosion = cv2.erode(dilation, kernel2, iterations=2)
 
-    cv2.imshow('image_binary_after_close',erosion)
+    # cv2.imshow('image_binary_after_close',erosion)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
     # ************************
-    # cv2.imshow('dds', binary)
+    # # cv2.imshow('dds', binary)
     # cv2.waitKey(200)
 
     contours, hier = cv2.findContours(
         erosion, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
 
     cv2.drawContours(binary, contours, -1, (0, 0, 255), 3)
-    cv2.imshow("contours", binary)
+    # cv2.imshow("contours", binary)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
@@ -295,9 +293,10 @@ def linecontours(cp_info, path):
         # print(rect)
         center_of_rect, w_h_of_rect, angle_of_rect = rect
         box = cv2.boxPoints(rect)  # 获取最小外接矩形的4个顶点坐标
-        #找指针（找最靠近圆心的点
+        # 找指针（找最靠近圆心的点
         point_near_center = box[0]
-        dis_between_o_p = (point_near_center[0] - c_x)**2 + (point_near_center[1] - c_y)**2
+        dis_between_o_p = (
+            point_near_center[0] - c_x)**2 + (point_near_center[1] - c_y)**2
         for point in box:
             dis = (point[0]-c_x)**2 + (point[1]-c_y)**2
             if(dis < dis_between_o_p):
@@ -315,7 +314,7 @@ def linecontours(cp_info, path):
         else:
             if w > r_1 / 3 or h > r_1 / 3:
                 lineCount += 1
-                if dis_between_o_p <= (r_1 * 0.3 ) ** 2:
+                if dis_between_o_p <= (r_1 * 0.3) ** 2:
                     needlecnt.append(xx)  # 指针轮廓
 
     # 指针穿过圆心的情况
@@ -341,7 +340,7 @@ def linecontours(cp_info, path):
     # for cnt in needlecnt:
     #     cv2.fillConvexPoly(mask,cnt , 255)
     mask = cv2.drawContours(mask, needlecnt, -1, (255, 255, 255), -1)  # 生成掩膜
-    # cv2.imshow('needle mask', mask)
+    # # cv2.imshow('needle mask', mask)
     # cv2.waitKey(0)
     # cv2.destroyAllWindows()
     cv2.imwrite(pname + '_scale' + ptype, img)
@@ -356,7 +355,7 @@ def needle(path, img, r, cx, cy, x0, y0):
     # circle = np.ones(img.shape, dtype="uint8")
     # circle = circle * 255
 
-    cv2.imshow('needle mask', img)
+    # cv2.imshow('needle mask', img)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
@@ -364,7 +363,7 @@ def needle(path, img, r, cx, cy, x0, y0):
     # # mask = cv2.erode(mask, kernel, iterations=1)
     # mask = cv2.dilate(mask, kernel, iterations=1)  # 膨胀
     #
-    # cv2.imshow('needle after dilate ', mask)
+    # # cv2.imshow('needle after dilate ', mask)
     # cv2.waitKey(0)
     # cv2.destroyAllWindows()
 
@@ -389,12 +388,12 @@ def needle(path, img, r, cx, cy, x0, y0):
     d1 = (px1 - cx) ** 2 + (py1 - cy) ** 2
     d2 = (px2 - cx) ** 2 + (py2 - cy) ** 2
     if d1 > d2:
-         axit = [px1, py1]
+        axit = [px1, py1]
     else:
         axit = [px2, py2]
     # nmask = cv2.erode(nmask, kernel, iterations=2)
 
-    cv2.imshow('houghlines', nmask)
+    # cv2.imshow('houghlines', nmask)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
     cnts, hier = cv2.findContours(
@@ -404,7 +403,7 @@ def needle(path, img, r, cx, cy, x0, y0):
     i = areass.index(max(areass))
     # print('contours[i]',contours[i])
     # cv2.drawContours(img, contours[i], -1, (10,20,250), 1)
-    # cv2.imshow('need_next', img)
+    # # cv2.imshow('need_next', img)
     cnt = cnts[i]
     output = cv2.fitLine(cnt, 2, 0, 0.001, 0.001)
     k = output[1] / output[0]
@@ -418,7 +417,7 @@ def needle(path, img, r, cx, cy, x0, y0):
     y2 = int(k * x2 + b)
     cv2.line(oimg, (x1, y1), (x2, y2), (0, 23, 255), 1, cv2.LINE_AA)
     cv2.line(oimg, (x1, y1), (x0, y0), (0, 23, 255), 1, cv2.LINE_AA)
-    cv2.imshow('msss', oimg)
+    # cv2.imshow('msss', oimg)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
     print('test_out.jpg')
@@ -426,33 +425,28 @@ def needle(path, img, r, cx, cy, x0, y0):
     return x1, y1, x2, y2
 
 
-
-
 pname, ptype = 0, 0
-
+ninfo = None
 
 # angle between opoint and needle
 
 
 def GetAngle(path, outpath, opoint):
     x0, y0 = opoint
-    global pname, ptype
-    pname, ptype = path.split('.')
-    ptype = '.' + ptype
+    global pname, ninfo
     pname = outpath + '/' + pname.split('/')[-1]
     print(pname)
 
     start = datetime.datetime.now()
-    ninfo = cut_pic(path)  # 2.截取表盘
     mask = linecontours(ninfo, path)  # mask 刻度线的mask
 
-    cx, cy = ninfo[1:] # 圆心坐标
+    cx, cy = ninfo[1:]  # 圆心坐标
     da, db, dc, de = needle(path, mask, ninfo[0], cx, cy, x0, y0)  # 圆心和识别点的坐标
     # da,db,dc,de=needle_line(lines,new_needleset,cx,cy)
     # print(da,db,dc,de)
 
-    OZ = [cx, cy, x0, y0]   # 圆心和指针端点的坐标
-    OP = [cx, cy, dc, de]   # 圆心和识别点（指针拟合得到）的坐标
+    OZ = [cx, cy, x0, y0]   # 圆心和识别点的坐标
+    OP = [cx, cy, dc, de]   # 圆心和指针端点的坐标
     ang1 = angle(OZ, OP)
     output = ang1
 
@@ -465,6 +459,9 @@ def GetAngle(path, outpath, opoint):
 
 # 输入图片路径，返回读数
 
+results = []
+cur_prob = 0
+
 
 def GetpointerResult(inputPath):
     # 输入文件夹
@@ -474,7 +471,8 @@ def GetpointerResult(inputPath):
 
     r = Get_baiduOCR_Response(inputpath)
 
-    p0, p1, text0, text1 = get_p0_p1(r)
+    global cur_prob, results
+    p0, p1, text0, text1, prob = get_p0_p1(r)
     print("text0 {}, text1 {}".format(text0, text1))
 
     ang0 = GetAngle(inputpath, outputpath, p0)  # 指针和p0的夹角
@@ -484,11 +482,98 @@ def GetpointerResult(inputPath):
         ang_between_0_1 += 360
     print("ang between first and second text  {} ".format(ang_between_0_1))
     print("ang of first text  {} ".format(ang0))
+    print("ang of second text  {} ".format(ang1))
 
     value = text0 + (text1 - text0) * ang0 / ang_between_0_1  # 计算示数
     print(value)
+
+    print(f'probability: {prob}')
+    cur_prob = prob
+    results.append({'value': value, 'probability': prob})
+
     return value
 
 
+def get_results():
+    global results
+    if cur_prob > 0.99:
+        return results[-1]
+
+    results.sort(key=lambda d: d['value'])
+    i = 0
+    while True:
+        if i == len(results)-1:
+            break
+
+        # 将相近的示数合并，对示数取平均，prob取和
+        if 0.9 < results[i]['value']/results[i+1]['value'] and results[i]['value']/results[i+1]['value'] < 1.1:
+            new_value = (results[i]['value']+results[i+1]['value'])/2
+            new_prob = results[i]['probability']+results[i+1]['probability']
+            results.remove(results[i])  # remove i
+            results.remove(results[i])  # remove i+1
+            results.insert(
+                i, {'value': new_value, 'probability': new_prob})   # 新的示数
+        else:   # 两数相差较大，不能合并，处理下一个数字
+            i += 1
+
+    return max(results, key=lambda d: d['probability'])
+
+
+def get_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--path', type=str, required=True,
+                        help='path of the image')
+    parser.add_argument('--detect_direction', type=bool,
+                        default=True, help='detect direction or not')
+    return parser.parse_args()
+
+
 if __name__ == "__main__":
-    GetpointerResult('images/1.jpg')
+    args = get_args()
+    cur_path = args.path
+    pname, ptype = args.path.split('.')
+    ptype = '.' + ptype
+
+    rotation_degree = [i for i in range(
+        30, 361, 30)] if args.detect_direction == True else [0]
+    current_degree = 0
+
+    ans = 0
+
+    for r_degree in rotation_degree:
+        try:
+            ninfo = cut_pic(cur_path)  # 截取表盘
+            print('-'*30, f'degree: {current_degree}', '-'*30)
+            temp = GetpointerResult(cur_path)
+
+            if cur_prob > 0.99:         # 置信度足够高，直接停，提高效率
+                break
+
+            raise Exception('next degree')
+        except Exception as e:
+            record = False
+            print(type(e), ':', e)
+            current_degree = r_degree
+            img = cv2.imread(args.path)
+            (h, w) = img.shape[:2]
+            cx, cy = (w//2, h//2)
+            M = cv2.getRotationMatrix2D((cx, cy), r_degree, 1)  # 旋转矩阵
+            cos_theta = abs(M[0, 0])
+            sin_theta = abs(M[1, 0])
+            w_new = int(sin_theta*h+cos_theta*w)
+            h_new = int(cos_theta*h+sin_theta*w)
+            delta_cx, delta_cy = w_new//2-cx, h_new//2-cy
+            M[0, 2] += delta_cx
+            M[1, 2] += delta_cy
+            img = cv2.warpAffine(img, M, (w_new, h_new),
+                                 borderValue=(255, 255, 255))
+            if not os.path.exists('.tmp'):
+                os.mkdir('.tmp',)
+            cv2.imwrite(f'.tmp/rotated_{r_degree}'+ptype, img)
+            cur_path = f'.tmp/rotated_{r_degree}'+ptype
+    if os.path.exists('.tmp'):
+        shutil.rmtree('.tmp', ignore_errors=True)
+
+    result = get_results()
+    print('-'*30, '示数', '-'*30)
+    print(f'value: {result["value"]}')
