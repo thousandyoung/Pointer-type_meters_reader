@@ -230,7 +230,7 @@ def linecontours(cp_info, path):
 
     circle = np.zeros(img.shape, dtype="uint8")
     cv2.circle(circle, (c_x, c_y), int(r_1 ), 255, -1)
-    img = cv2.bitwise_and(img, circle)
+    gray = cv2.bitwise_and(img, circle)
     cv2.imshow('image_reinforced', img)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
@@ -238,7 +238,7 @@ def linecontours(cp_info, path):
     # cv2.imshow('dds', img)
     # cv2.waitKey(200)
     # ret, binary = cv2.threshold(~gray, 0, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)
-    binary = cv2.adaptiveThreshold(~img, 255,
+    binary = cv2.adaptiveThreshold(~gray, 255,
                                    cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 15, -10)
 
     circle = np.zeros(binary.shape, dtype="uint8")
@@ -481,4 +481,4 @@ def GetpointerResult(inputPath):
 
 
 if __name__ == "__main__":
-    GetpointerResult('images/5.jpg')
+    GetpointerResult('images/8.jpg')
