@@ -13,7 +13,7 @@ def Get_baiduOCR_Response(inputpath):
     f = open(inputpath, 'rb')
     img = base64.b64encode(f.read())
 
-    host = 'https://aip.baidubce.com/oauth/2.0/token?grant_type=client_credentials&client_id=363iZWUioSnPhzw4DowM2aGS&client_secret=VrgeW0AsIwI3FQj72zN4NWyM8SQK2s3s'
+    host = "your API"
     response = requests.get(host)
 
     params = {"image": img, 'vertexes_location': 'true'}
